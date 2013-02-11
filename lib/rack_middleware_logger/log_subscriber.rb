@@ -3,7 +3,7 @@ require 'active_support/log_subscriber'
 module RackMiddlewareLogger
   class LogSubscriber < ActiveSupport::LogSubscriber
     def self.runtime
-      @runtime
+      @runtime ||= 0
     end
 
     def self.runtime=(runtime)
@@ -23,6 +23,9 @@ module RackMiddlewareLogger
     end
 
     def start(event)
+      self.class.runtime = @last_duration
+      return unless logger.debug?
+
       middleware = event.payload[:middleware]
       env_id = event.payload[:env_id]
       duration = if @last_env_id && @last_env_id == env_id
@@ -45,7 +48,6 @@ module RackMiddlewareLogger
     ensure
       @last_env_id = env_id
       @last_duration = event.duration
-      self.class.runtime = @last_duration
     end
 
     def test(event)
