@@ -8,8 +8,8 @@ Gem::Specification.new do |gem|
   gem.version       = RackMiddlewareLogger::VERSION
   gem.authors       = ["Hanfei Shen"]
   gem.email         = ["qqshfox@gmail.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
+  gem.description   = %q{Rails-like logger for rack middlewares}
+  gem.summary       = %q{Rails-like logger for rack middlewares}
   gem.homepage      = ""
 
   gem.files         = `git ls-files`.split($/)
