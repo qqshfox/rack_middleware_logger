@@ -3,6 +3,7 @@ require 'rack_middleware_logger/log_subscriber'
 require 'rack_middleware_logger/railtie' if defined?(Rails)
 
 require 'rack/builder'
+require 'active_support/notifications'
 
 module Rack
   class Builder
