@@ -1,6 +1,7 @@
 require 'rack_middleware_logger/version'
 require 'rack_middleware_logger/log_subscriber'
 require 'rack_middleware_logger/railtie' if defined?(Rails)
+require 'rack_middleware_logger/rack_rails_logger' if defined?(RackRailsLogger)
 
 require 'rack/builder'
 require 'active_support/notifications'
