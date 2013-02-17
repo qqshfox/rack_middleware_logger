@@ -1,12 +1,12 @@
 # RackMiddlewareLogger
 
-TODO: Write a gem description
+Rails-like logger for rack's middlewares
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'rack_middleware_logger'
+    gem 'rack_middleware_logger', group: 'development'
 
 And then execute:
 
@@ -15,10 +15,6 @@ And then execute:
 Or install it yourself as:
 
     $ gem install rack_middleware_logger
-
-## Usage
-
-TODO: Write usage instructions here
 
 ## Contributing
 
