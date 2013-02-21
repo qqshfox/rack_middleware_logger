@@ -17,25 +17,18 @@ module RackMiddlewareLogger
 
     def initialize
       super
-      @last_env_id = nil
-      @last_duration = 0.0
       @odd_or_even = false
     end
 
-    def start(event)
-      self.class.runtime = @last_duration
+    def logging(event)
+      duration = event.payload[:duration]
+
+      self.class.runtime += duration
       return unless logger.debug?
 
-      middleware = event.payload[:middleware]
-      env_id = event.payload[:env_id]
-      duration = if @last_env_id && @last_env_id == env_id
-                   event.duration - @last_duration
-                 else
-                   event.duration
-                 end
+      middleware_name = event.payload[:middleware_name]
 
       name = 'Middleware (%.3fms)' % duration
-      middleware_name = middleware.class
 
       if odd?
         name = color(name, CYAN, true)
@@ -45,13 +38,6 @@ module RackMiddlewareLogger
       end
 
       debug "  #{name}  #{middleware_name}"
-    ensure
-      @last_env_id = env_id
-      @last_duration = event.duration
-    end
-
-    def test(event)
-      debug event.payload[:message]
     end
 
     private

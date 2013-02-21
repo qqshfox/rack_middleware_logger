@@ -1,24 +1,31 @@
 require 'rack_middleware_logger/version'
 require 'rack_middleware_logger/log_subscriber'
+require 'rack_middleware_logger/timer'
 require 'rack_middleware_logger/rack_rails_logger' if defined?(RackRailsLogger)
 
-require 'rack/builder'
-require 'active_support/notifications'
+module RackMiddlewareLogger
+end
 
-module Rack
-  class Builder
-    alias old_use use unless method_defined? :old_use
+require 'action_dispatch/middleware/stack'
 
-    def use(middleware, *args, &block)
-      middleware.class_eval do
-        alias old_call call unless method_defined? :old_call
-        def call(env)
-          ActiveSupport::Notifications.instrument('start.logger.middleware.rack', :middleware => self, :env_id => env.__id__) do
-            old_call(env)
-          end
-        end
+module ActionDispatch
+  class MiddlewareStack
+
+    class Middleware
+
+      alias rack_middleware_logger_old_build build unless method_defined? :rack_middleware_logger_old_build
+      def build(app)
+        RackMiddlewareLogger::Timer.new(rack_middleware_logger_old_build(app))
       end
-      old_use(middleware, *args, &block)
+
+    end
+
+    alias rack_middleware_logger_old_build build unless method_defined? :rack_middleware_logger_old_build
+    def build(app = nil, &block)
+      app ||= block
+      raise "MiddlewareStack#build requires an app" unless app
+      app = RackMiddlewareLogger::Timer.new(app)
+      rack_middleware_logger_old_build app
     end
 
   end
