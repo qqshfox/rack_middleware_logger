@@ -25,14 +25,13 @@ module RackMiddlewareLogger
                  end
       env["RACK_MIDDLEWARE_LOGGER_RUNTIME"] = runtime
 
-      if duration > @options[:log_threshold]
-        raw_payload = {
-          :middleware_name => @app.class.name,
-          :duration => duration,
-        }
+      raw_payload = {
+        :middleware_name => @app.class.name,
+        :duration => duration,
+        :log_threshold => @options[:log_threshold],
+      }
 
-        ActiveSupport::Notifications.instrument('logging.logger.middleware.rack', raw_payload)
-      end
+      ActiveSupport::Notifications.instrument('logging.logger.middleware.rack', raw_payload)
 
       result
     end
