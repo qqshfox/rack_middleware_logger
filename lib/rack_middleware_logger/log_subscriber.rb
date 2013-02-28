@@ -26,7 +26,7 @@ module RackMiddlewareLogger
       self.class.runtime += duration
 
       log_threshold = event.payload[:log_threshold]
-      return unless logger.debug? || duration > log_threshold
+      return unless logger.debug? && duration > log_threshold
 
       middleware_name = event.payload[:middleware_name]
 
