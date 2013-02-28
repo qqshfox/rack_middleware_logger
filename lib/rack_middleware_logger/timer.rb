@@ -5,13 +5,18 @@ require 'active_support/core_ext/benchmark.rb'
 module RackMiddlewareLogger
   class Timer
 
-    DEFAULT_OPTIONS = {
-      :log_threshold => 0.1, # millisecond
-    }
+    DEFAULT_LOG_THRESHOLD = 0.1 # millisecond
 
-    def initialize(app, options={})
+    def self.log_threshold
+      @log_threshold ||= DEFAULT_LOG_THRESHOLD
+    end
+
+    def self.log_threshold=(log_threshold)
+      @log_threshold = log_threshold
+    end
+
+    def initialize(app)
       @app = app
-      @options = DEFAULT_OPTIONS.merge(options)
     end
 
     def call(env)
@@ -28,7 +33,7 @@ module RackMiddlewareLogger
       raw_payload = {
         :middleware_name => @app.class.name,
         :duration => duration,
-        :log_threshold => @options[:log_threshold],
+        :log_threshold => self.class.log_threshold,
       }
 
       ActiveSupport::Notifications.instrument('logging.logger.middleware.rack', raw_payload)
